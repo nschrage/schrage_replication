@@ -10,28 +10,76 @@ biblio-style: "apalike"
 link-citations: false
 toc: false
 nocite: |
+  @King06, @King00, @Enos14, @Fossett89, @Kinder96, @Craig18, @Dinesen15, @King95, @Amaral18,Johnston18, Florida20, @Enos16
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# loading relevant libraries
+
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+
+library(bookdown)
+library(tinytex)
+
+library(gt)
+library(gtsummary)
+library(stargazer)
+
+library(knitr)
+library(styler)
+
+library(rstanarm)
+library(patchwork)
+
+library(lubridate)
+
+
+
+#library(boot)
+
+options(tinytex.verbose = TRUE)
+
+
+# setting up global values
+
+# this package is about statistical estimates.
+library(ei)
+# package helpful for matching treated and control groups with similar covariate
+# distributions.
+library(MatchIt)
+# package for producing simple weighted statistics
+library(weights)
+# simple bootstrapping -- didn't know this existed.
+library(simpleboot)
+# helpful statistics package, especially for modeling
+library(Zelig)
+# package that helps format latex objects side by side
+library(apsrtable)
+
+# Need to set wd so that my work is reproducible.
+
 ```
 
-## R Markdown
+# Abstract
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Introduction
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Literature Review
 
-```{r cars}
-summary(cars)
-```
+# Replication 
 
-## Including Plots
+![ADD CAPTION](data/images/fig1.png) 
 
-You can also embed plots, for example:
+# Extension
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+# Appendix
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Conclusion
+
+Bibliography
+
