@@ -5,6 +5,7 @@ header-includes:
     - \usepackage{setspace}\doublespacing
 date: "5/8/2020"
 output: bookdown::pdf_document2
+graphics: yes
 bibliography: [schrage_bib.bib]
 biblio-style: "apalike"
 link-citations: false
@@ -63,6 +64,11 @@ library(apsrtable)
 
 # Need to set wd so that my work is reproducible.
 
+# so that I can crop
+tinytex::tlmgr_install("pdfcrop")
+
+# how to reference 
+
 ```
 
 # Abstract
@@ -71,15 +77,25 @@ library(apsrtable)
 
 # Literature Review
 
+ $A = \pi*r^{2}$ 
+
 # Replication 
 
-![ADD CAPTION](data/images/fig1.png) 
+![ADD CAPTION](data/images/fig1.png)
+
+![ADD CAPTION](data/images/fig2a.png)
 
 # Extension
 
 # Appendix
 
 # Conclusion
+
+```{r FigureA2, fig.height=3, fig.width=1, fig.align="CENTER", fig.caption = "NO CAP", echo=FALSE}
+knitr::include_graphics("data/images/fig2a.png")
+```
+
+
 
 Bibliography
 
