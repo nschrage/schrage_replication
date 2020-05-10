@@ -143,9 +143,11 @@ My extension expanded on the initial parallel trends test that Enos ran as a rob
 
 To conduct this extension, I ran the parallel trends test code. Then I wrote new code to create graphics (displayed later) using Tidyverse and ggplot [@Tidyverse]. Enos originally ran his test with distance set to 200 meters from demolished projects. To extend this, I ran a series of tests at 100, 200 (as a replication), and 300 meters. There are two important takeaways: First, by and large my figures confirmed Enos’ conclusions that the prior changes in voting were similar for white and black voters in both treatment and control. Second, it is essential to point out how the small sample size amongst the group of interest (white treatment) could be potentially skewing the results found here (and could potentially cast doubt on the difference-in-differences model.)
 
-![Extension. Results for the parallel trends test, with proximity/treatment distance set to 100 meters from demolished projects. Unlike the other examples, the white treatment group was out of alignment both before and after the treatment occurred. At first this was somewhat puzzling, but a possible explanation is revealed by looking at the raw numbers and realizing that the sample size of white treatment is so much smaller than the other categories (Wt: 24 v. Wc 81921, Bt: 1843 v. Bc: 237599). This make it hard to reach a definitive conclusion about the validity of this model.](data/images/pt100.png)
+![Replication. Results for the parallel trends test, with proximity/treatment distance set to 200 meters from demolished projects. Before the treatment in 2000 occurred, all groups (treatment/control) were parallel, while after the exogenous intervention between 2000 and 2004 all groups continue to follow the same trend with the exception of the white treatment group which has a notable downturn.  As Enos concludes, “the prior changes in voting were similar for white and black voters in both treatment and control (Enos 16).”](data/images/pt200.png)
 
 ![Extension. Results for the parallel trends test, with proximity/treatment distance set to 300 meters from demolished projects. Before the treatment in 2000 occurred, all groups (treatment/control) were parallel, while after the exogenous intervention between 2000 and 2004 all groups continue to follow the same trend with the exception of the white treatment group which has a notable downturn.  As Enos concludes, “the prior changes in voting were similar for white and black voters in both treatment and control (Enos 16).”](data/images/pt300.png)
+
+![Extension. Results for the parallel trends test, with proximity/treatment distance set to 100 meters from demolished projects. Unlike the other examples, the white treatment group was out of alignment both before and after the treatment occurred. At first this was somewhat puzzling, but a possible explanation is revealed by looking at the raw numbers and realizing that the sample size of white treatment is so much smaller than the other categories (Wt: 24 v. Wc 81921, Bt: 1843 v. Bc: 237599). This make it hard to reach a definitive conclusion about the validity of this model.](data/images/pt100.png)
 
 # Conclusion
 Building on past research, Enos designed an empirical test to examine how much the context in which someone lives affects their political behavior. In particular, his work is grounded in V. O. Key’s landmark 1949 examination of the American south and the phenomenon of “racial threat” -- essentially the increased political motivation of whites threatened by the presence of African Americans. Enos examined a natural experiment created by the demolition of public housing in Chicago that led to the mass displacement of approximately 25,000 African Americans. Specifically, Enos compared the effect on white voting turnout in Chicago of removing African American neighbors on white voting turnout in Chicago. Using a difference-in-differences model, Enos compared the difference in average voter turn out at times t-1 (pre demolition turnout) and t (post demolition turnout) for white voters in close proximity to the demolished projects to the average voter turnout over the same period for white voters living farther away. The results confirmed that racial threat is highly context specific, in this case demonstrating that the strength of the effect is inversely correlated with distance from the project and directly correlated with the size of the outgroup. 
@@ -160,8 +162,7 @@ The results of this research reaffirm the legitimacy of the exploration of conte
 
 
 # Appendix
-
-![Replication. Results for the parallel trends test, with proximity/treatment distance set to 200 meters from demolished projects. Before the treatment in 2000 occurred, all groups (treatment/control) were parallel, while after the exogenous intervention between 2000 and 2004 all groups continue to follow the same trend with the exception of the white treatment group which has a notable downturn.  As Enos concludes, “the prior changes in voting were similar for white and black voters in both treatment and control (Enos 16).”](data/images/pt200.png)
+Results from Enos [@Enos16] were successfully replicated. In the Rmd (available in my GitHub repo), the code to replicate everything is present, but the results are not printed.^[https://github.com/nschrage/schrage_replication]
 
 ```{r Setting Up Replication, echo=FALSE, message=FALSE, eval=FALSE}
 
@@ -1210,6 +1211,5 @@ parallel.trends_100_graphic_1
 ```
 
 
-
-**Bibliography**
+# Bibliography
 
