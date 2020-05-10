@@ -129,6 +129,99 @@ point.size <- 2
 line.offset <- .0175
 ```
 
+```{r Figure 1 Estimation, echo = FALSE, cache = TRUE, eval=FALSE}
+
+# loading data
+x <- read_csv("data/data_clean/data.turnout.csv", col_types = cols(
+  .default = col_double(),
+  reg = col_date(format = ""),
+  s = col_character()
+))
+
+# first I just want to replicate the results of fig 1
+
+# creating some global variable 
+# change later obviously
+# dist <- 100
+
+# I think I can use this later in the creation of some of the images. 
+dists <- seq(from = 100, to = 1000, by = 100)
+
+
+
+# don't really understand this...
+namepcts = 1
+  
+  #c(seq(from = .91, to = .96, by = .01),.975,.99,1)
+
+##matrices for stroing results
+res.mat = matrix(nrow=length(namepcts),ncol=length(dists))
+
+white.treat.N = res.mat
+white.treat.effect.mean.boot = res.mat
+white.treat.effect.conf.boot.lower = res.mat
+white.treat.effect.conf.boot.upper = res.mat
+
+black.treat.N = res.mat
+black.treat.effect.mean.boot = res.mat
+black.treat.effect.conf.boot.lower = res.mat
+black.treat.effect.conf.boot.upper = res.mat
+
+
+# where do the estimations come from
+# figure out how to run the regressions he does... 
+# makes more sense to just translate from base r, don't want to deal with drama again... 
+
+# creating treatment and control groups, adapted from enos code.
+
+##loop through definitions of white and distances and estimate at each combination
+for(j in 1:length(namepcts)){
+	##define a treatment and control group for each name percent
+	white = x[x$whitename>=namepcts[j],]
+   black = x[x$blackname>=namepcts[j],]
+  
+    for(h in 1:length(dists)){
+      	treatment_white = x[x$demo.distance<=dists[h],]
+      	treatment_black = x[x$demo.distance<=dists[h],]
+      	control_white = x[x$demo.distance>dists[h],]
+      	control_black = x[x$demo.distance>dists[h],]     		
+	
+      	white.treat.N[j,h] = nrow(treatment_white)
+      	black.treat.N[j,h] = nrow(treatment_black)
+	      	
+	   ##for white and black subjects, perform t test of differences of means with boostrapped standard errors  	
+		if(white.treat.N[j,h] > 0){
+			white.boot = two.boot((treatment_white$vote2004-treatment_white$vote2000),(control_white$vote2004-control_white$vote2000),mean, R = 1000, na.rm=T)
+			white.treat.effect.mean.boot[j,h] = white.boot$t0
+			white.boot.ci = boot.ci(white.boot, type = 'basic')
+			white.treat.effect.conf.boot.lower[j,h] = white.boot.ci$basic[4]
+			white.treat.effect.conf.boot.upper[j,h] = white.boot.ci$basic[5]
+		      		}
+		      		
+		if(black.treat.N[j,h] > 0){
+			black.boot = two.boot((treatment_black$vote2004-treatment_black$vote2000),(control_black$vote2004-control_black$vote2000),mean, R = 1000, na.rm=T)
+			black.treat.effect.mean.boot[j,h] = black.boot$t0
+			black.boot.ci = boot.ci(black.boot, type = 'basic')
+			black.treat.effect.conf.boot.lower[j,h] = black.boot.ci$basic[4]
+			black.treat.effect.conf.boot.upper[j,h] = black.boot.ci$basic[5]		
+			 }
+			 }
+	}
+# I know there is some iteration that I can do that would make my life so much easier
+# had
+# so is this the model being run
+# in his words... 
+# i'm having some trouble bootstrapping confidence intervals. 
+# where does the turn out stuff come into play
+## for white and black subjects, perform t test of differences of means with
+## boostrapped standard errors
+  
+# try to recreate graphic #1. 
+
+# also not sure if I thought this through... ran my computer all night so that I could get 
+
+```
+
 ```{r Figure 1 Replication, echo = FALSE, results="asis", eval=FALSE}
 
 # how to display results.
@@ -688,6 +781,359 @@ for (i in graphs){
 }
 ```
 
+```{r "Figure A2 2Replication of Parallel Trends D200 Extension", echo=FALSE, results="asis", eval=FALSE}
+
+# loading data
+x <- read_csv("data/data_clean/data.turnout.csv", col_types = cols(
+  .default = col_double(),
+  reg = col_date(format = ""),
+  s = col_character()
+))
+
+##these are the elections to look at
+elections = c('vote1996','vote1998','vote2000','vote2002','vote2004')
+
+##matrices for storing results
+outmat = matrix(nrow=length(elections), ncol=4)
+colnames(outmat) = c('white.treatment','white.control','black.treatment','black.control')
+
+##use different registration cutoff here because going all the way back to 1996
+
+# COULD JUST LOAD DATA HERE...
+
+x <- x %>% 
+  
+  filter(reg < "1996-10-08") %>%
+  
+  filter(is.na(reg) == F)
+
+
+##define a treatment and control group for each name percent
+useW = x[x$whitename>=.975,]
+useB = x[x$blackname>=.975,]
+
+##set distance for parallel trends test to 200 meters, can be tested at other distances too (MAYBE THIS IS MY PROJECT)  
+treatment_white = useW[useW$demo.distance <= 200,]
+treatment_black = useB[useB$demo.distance <= 200,]
+control_white = useW[useW$demo.distance > 200,]
+control_black = useB[useB$demo.distance > 200,]     		
+
+WtreatN = nrow(treatment_white)
+BtreatN = nrow(treatment_black)
+WcontN = nrow(control_white)
+BcontN = nrow(control_black)
+     
+##test turnout across difference elections     
+for(i in 1:length(elections)){
+		election = elections[i]
+		outmat[i,'white.treatment'] = sum(treatment_white[election],na.rm=T)/WtreatN
+	  outmat[i,'black.treatment'] = sum(treatment_black[election],na.rm=T)/BtreatN
+	  outmat[i,'white.control'] = sum(control_white[election],na.rm=T)/WcontN
+	  outmat[i,'black.control'] = sum(control_black[election],na.rm=T)/BcontN  
+}
+
+
+# Data Wrangling -- Creating Tibble
+	    
+parallel.trends_100 = outmat
+
+parallel.trends_100 <- as.tibble(parallel.trends_100) %>% 
+  
+  rename("WT" = "white.treatment","WC" = "white.control", "BT" = "black.treatment", "BC" = "black.control")  
+
+year <- c('1996','1998','2000','2002','2004')  
+  
+year <- as.tibble(year) 
+
+parallel.trends_100  <- tibble(parallel.trends_100, year)
+
+# Building Basic Graphic 
+
+parallel.trends_100_graphic <- parallel.trends_100  %>% 
+  
+  ggplot(aes(x = value)) +
+  
+  geom_text((aes(y = WT, label = "WT"))) +
+
+  geom_text((aes(y = WC, label = "WC"))) +
+  
+  geom_text((aes(y = BT, label = "BT"))) +
+   
+  geom_text((aes(y = BC, label = "BC"))) +
+
+  # from = .5, to = .9, by = .05
+  
+  scale_y_continuous(breaks = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), labels = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), name = "Percent Voting Turnout", limits = c(0.5,0.9)) + 
+  
+  scale_x_discrete(breaks = c(1996, 1998, 2000, 2002, 2004), labels = c(1996, 1998, 2000, 2002, 2004), name = "Year") +
+  
+  labs(title = "Parallel Trends Test", subtitle = "D = 200 meters") +
+  
+  # geom_vline(xintercept = "2002", color = "red") +
+  
+  # potentially do an annotate 
+  
+  theme_classic()  
+  
+parallel.trends_100_graphic_1 <- parallel.trends_100_graphic
+bonjour <- c(1,2,3,4)
+parallel.trends_100 <- as.data.frame(parallel.trends_100)
+
+# Getting the Lines to Show Up, Shouldn't Have Been Its Own Thing BUT HERE WE ARE
+
+for (j in bonjour) {
+  for(i in bonjour){
+     
+     parallel.trends_100_graphic_1 <- parallel.trends_100_graphic_1 +  
+     
+    geom_segment(x = parallel.trends_100$value[i], y = parallel.trends_100[i, j], 
+                 xend = parallel.trends_100$value[i+1], yend = parallel.trends_100[i+1, j])
+     
+  }
+  
+  parallel.trends_100_graphic_1
+}
+ 
+parallel.trends_100_graphic_1
+
+
+```
+
+```{r Parallel Trends D100 Extension, echo=FALSE, results="asis", fig.cap="TEST", eval=FALSE}
+
+# loading data
+x <- read_csv("data/data_clean/data.turnout.csv", col_types = cols(
+  .default = col_double(),
+  reg = col_date(format = ""),
+  s = col_character()
+))
+
+##these are the elections to look at
+elections = c('vote1996','vote1998','vote2000','vote2002','vote2004')
+
+##matrices for storing results
+outmat = matrix(nrow=length(elections), ncol=4)
+colnames(outmat) = c('white.treatment','white.control','black.treatment','black.control')
+
+##use different registration cutoff here because going all the way back to 1996
+
+# COULD JUST LOAD DATA HERE...
+
+x <- x %>% 
+  
+  filter(reg < "1996-10-08") %>%
+  
+  filter(is.na(reg) == F)
+
+
+##define a treatment and control group for each name percent
+useW = x[x$whitename>=.975,]
+useB = x[x$blackname>=.975,]
+
+##set distance for parallel trends test to 200 meters, can be tested at other distances too (MAYBE THIS IS MY PROJECT)  
+treatment_white = useW[useW$demo.distance <= 100,]
+treatment_black = useB[useB$demo.distance <= 100,]
+control_white = useW[useW$demo.distance > 100,]
+control_black = useB[useB$demo.distance > 100,]     		
+
+WtreatN = nrow(treatment_white)
+BtreatN = nrow(treatment_black)
+WcontN = nrow(control_white)
+BcontN = nrow(control_black)
+     
+##test turnout across difference elections     
+for(i in 1:length(elections)){
+		election = elections[i]
+		outmat[i,'white.treatment'] = sum(treatment_white[election],na.rm=T)/WtreatN
+	  outmat[i,'black.treatment'] = sum(treatment_black[election],na.rm=T)/BtreatN
+	  outmat[i,'white.control'] = sum(control_white[election],na.rm=T)/WcontN
+	  outmat[i,'black.control'] = sum(control_black[election],na.rm=T)/BcontN  
+}
+
+
+# Data Wrangling -- Creating Tibble
+	    
+parallel.trends_100 = outmat
+
+parallel.trends_100 <- as.tibble(parallel.trends_100) %>% 
+  
+  rename("WT" = "white.treatment","WC" = "white.control", "BT" = "black.treatment", "BC" = "black.control")  
+
+year <- c('1996','1998','2000','2002','2004')  
+  
+year <- as.tibble(year) 
+
+parallel.trends_100  <- tibble(parallel.trends_100, year)
+
+# Building Basic Graphic 
+
+parallel.trends_100_graphic <- parallel.trends_100  %>% 
+  
+  ggplot(aes(x = value)) +
+  
+  geom_text((aes(y = WT, label = "WT"))) +
+
+  geom_text((aes(y = WC, label = "WC"))) +
+  
+  geom_text((aes(y = BT, label = "BT"))) +
+   
+  geom_text((aes(y = BC, label = "BC"))) +
+
+  # from = .5, to = .9, by = .05
+  
+  scale_y_continuous(breaks = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), labels = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), name = "Percent Voting Turnout", limits = c(0.5,0.9)) + 
+  
+  scale_x_discrete(breaks = c(1996, 1998, 2000, 2002, 2004), labels = c(1996, 1998, 2000, 2002, 2004), name = "Year") +
+  
+  labs(title = "Parallel Trends Test", subtitle = "D = 100 meters") +
+  
+  # geom_vline(xintercept = "2002", color = "red") +
+  
+  # potentially do an annotate 
+  
+  theme_classic()  
+  
+parallel.trends_100_graphic_1 <- parallel.trends_100_graphic
+bonjour <- c(1,2,3,4)
+parallel.trends_100 <- as.data.frame(parallel.trends_100)
+
+# Getting the Lines to Show Up, Shouldn't Have Been Its Own Thing BUT HERE WE ARE
+
+for (j in bonjour) {
+  for(i in bonjour){
+     
+     parallel.trends_100_graphic_1 <- parallel.trends_100_graphic_1 +  
+     
+    geom_segment(x = parallel.trends_100$value[i], y = parallel.trends_100[i, j], 
+                 xend = parallel.trends_100$value[i+1], yend = parallel.trends_100[i+1, j])
+     
+  }
+  
+  parallel.trends_100_graphic_1
+}
+ 
+parallel.trends_100_graphic_1
+
+
+```
+
+```{r Parallel Trends D300 Extension, echo=FALSE, results="asis", fig.cap="TEST", eval=FALSE}
+
+# loading data
+x <- read_csv("data/data_clean/data.turnout.csv", col_types = cols(
+  .default = col_double(),
+  reg = col_date(format = ""),
+  s = col_character()
+))
+
+##these are the elections to look at
+elections = c('vote1996','vote1998','vote2000','vote2002','vote2004')
+
+##matrices for storing results
+outmat = matrix(nrow=length(elections), ncol=4)
+colnames(outmat) = c('white.treatment','white.control','black.treatment','black.control')
+
+##use different registration cutoff here because going all the way back to 1996
+
+# COULD JUST LOAD DATA HERE...
+
+x <- x %>% 
+  
+  filter(reg < "1996-10-08") %>%
+  
+  filter(is.na(reg) == F)
+
+
+##define a treatment and control group for each name percent
+useW = x[x$whitename>=.975,]
+useB = x[x$blackname>=.975,]
+
+##set distance for parallel trends test to 200 meters, can be tested at other distances too (MAYBE THIS IS MY PROJECT)  
+treatment_white = useW[useW$demo.distance <= 300,]
+treatment_black = useB[useB$demo.distance <= 300,]
+control_white = useW[useW$demo.distance > 300,]
+control_black = useB[useB$demo.distance > 300,]     		
+
+WtreatN = nrow(treatment_white)
+BtreatN = nrow(treatment_black)
+WcontN = nrow(control_white)
+BcontN = nrow(control_black)
+     
+##test turnout across difference elections     
+for(i in 1:length(elections)){
+		election = elections[i]
+		outmat[i,'white.treatment'] = sum(treatment_white[election],na.rm=T)/WtreatN
+	  outmat[i,'black.treatment'] = sum(treatment_black[election],na.rm=T)/BtreatN
+	  outmat[i,'white.control'] = sum(control_white[election],na.rm=T)/WcontN
+	  outmat[i,'black.control'] = sum(control_black[election],na.rm=T)/BcontN  
+}
+
+
+# Data Wrangling -- Creating Tibble
+	    
+parallel.trends_100 = outmat
+
+parallel.trends_100 <- as.tibble(parallel.trends_100) %>% 
+  
+  rename("WT" = "white.treatment","WC" = "white.control", "BT" = "black.treatment", "BC" = "black.control")  
+
+year <- c('1996','1998','2000','2002','2004')  
+  
+year <- as.tibble(year) 
+
+parallel.trends_100  <- tibble(parallel.trends_100, year)
+
+# Building Basic Graphic 
+
+parallel.trends_100_graphic <- parallel.trends_100  %>% 
+  
+  ggplot(aes(x = value)) +
+  
+  geom_text((aes(y = WT, label = "WT"))) +
+
+  geom_text((aes(y = WC, label = "WC"))) +
+  
+  geom_text((aes(y = BT, label = "BT"))) +
+   
+  geom_text((aes(y = BC, label = "BC"))) +
+
+  # from = .5, to = .9, by = .05
+  
+  scale_y_continuous(breaks = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), labels = c(0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.8, 0.85, 0.9), name = "Percent Voting Turnout", limits = c(0.5,0.9)) + 
+  
+  scale_x_discrete(breaks = c(1996, 1998, 2000, 2002, 2004), labels = c(1996, 1998, 2000, 2002, 2004), name = "Year") +
+  
+  labs(title = "Parallel Trends Test", subtitle = "D = 300 meters") +
+  
+  # geom_vline(xintercept = "2002", color = "red") +
+  
+  # potentially do an annotate 
+  
+  theme_classic()  
+  
+parallel.trends_100_graphic_1 <- parallel.trends_100_graphic
+bonjour <- c(1,2,3,4)
+parallel.trends_100 <- as.data.frame(parallel.trends_100)
+
+# Getting the Lines to Show Up, Shouldn't Have Been Its Own Thing BUT HERE WE ARE
+
+for (j in bonjour) {
+  for(i in bonjour){
+     
+     parallel.trends_100_graphic_1 <- parallel.trends_100_graphic_1 +  
+     
+    geom_segment(x = parallel.trends_100$value[i], y = parallel.trends_100[i, j], 
+                 xend = parallel.trends_100$value[i+1], yend = parallel.trends_100[i+1, j])
+     
+  }
+  
+  parallel.trends_100_graphic_1
+}
+ 
+parallel.trends_100_graphic_1
+
+
+```
 
 # Conclusion
 
