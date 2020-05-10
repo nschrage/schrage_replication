@@ -4,7 +4,9 @@ author: "Niel Schrage"
 header-includes:
     - \usepackage{setspace}\doublespacing
 date: "5/8/2020"
-output: bookdown::pdf_document2
+output: 
+  bookdown::pdf_document2:
+      latex_engine: xelatex
 graphics: yes
 bibliography: [schrage_bib.bib]
 biblio-style: "apalike"
@@ -84,8 +86,46 @@ My extension expanded on the initial parallel trends test run by Enos as a robus
 To conduct this extension, I ran the parallel trends test code. Then I wrote new code to create graphics (displayed later) using Tidyverse [@Tidyverse]. Enos originally ran his test with distance set to 200 meters from demolished projects. To extend this, I ran a series of tests at 100, 200 (as a replication), and 300 meters. There are two important takeaways: First, by and large my figures confirmed Enos’ conclusions that the prior changes in voting were similar for white and black voters in both treatment and control. Second, it is essential to point out how the small sample size amongst the group of interest (white treatment) could be potentially skewing the results found here (and could potentially cast doubt on the difference-in-differences model.)
 
 # Literature Review
+In the paper “What the Demolition of Public Housing Teaches Us about the Impact of Racial Threat on Political Behavior,” Ryan Enos studies the impact that an exogenous demographic shift has on voting turnout and results. This paper seeks to answer the overarching question: how much does the context in which a certain person lives affect their political behavior? 
 
- $A = \pi*r^{2}$ 
+The paper seeks to extend the research performed by Key [@Key49] who examined county voting patterns in the American South and found a positive correlation between the number of African Americans in the county and white voter turnout in general and votes for conservative politicians in particular. Key argued that presence of African Americans -- the outgroup -- inspired fears among the white population, which motivated them to vote and vote for conservative politicians. He labeled this phenomenon “racial threat.” 
+
+Key’s analysis launched a new field of research on racial context and its influence on behavior. The impact of context in general, and racial threat in particular, has blossomed into a cottage industry among the academic community. As Enos notes, studies have investigated, among other issues, the effects of racial threat on voter turnout [@Leighley99], candidate support [@Enos10], racial attitudes [@Gay06], and social capital [@Putnam07]. More recent studies have examined the effect of racial threat arising in the context of workplace populations [@Hamel20], influencing the election behavior of Latinos threatened by the candidacy of Donald Trump [@Gutierrez19], triggering support for ballot initiatives [@Reny18] and being shaped more by adolescent rather than contemporaneous context [@Goldman20].
+
+However, while easy to hypothesize situations where context may be a powerful influence on attitudes and behavior, the challenge of empirically testing for racial threat has proven to be great. Enos highlights shortcomings in data, challenges of identification, and disputes over theory as historical limitations to contextual racial threat examinations. The variety of potential endogenous confounding factors that have historically made academic consensus on research and conclusions from context based racial threat studies hard to find.
+
+For example, two studies highlighted by Enos, Giles and Buckner [@Giles93]) and Voss [@Voss96] illustrate the difficulties of identifying appropriate data to define context and assess whether racial threat is demonstrated. Using aggregate data on election results in the 1992 Louisiana gubernatorial election, Giles and Buckner concluded that the proximity of white voters to African American residents at the county level made whites more likely to vote for self avowed racist David Duke. They explained their result by suggesting that Duke’s candidacy triggered “old-fashioned” racial stereotypes. In contrast, Voss examined the same election but relied on a different geographic aggregation; they could find no relationship between white voters’ proximity to African Americans and votes for Duke’s election. Voss rejected the explanation of “old fashioned stereotypes” in current day Louisiana and argued that the use of aggregate data by Giles and Buckner was misplaced. 
+
+Other scholars have highlighted alternate causal explanations, citing election bias as a challenge to establishing causation [@Cho13] or speculating that “economic threat” is a better explanation than “racial threat” [@Gay06]. Finally, the theory of context around “racial threat” has faced serious attack from scholars that, as Enos identifies, argue that “racial attitudes and related behaviors should not be sensitive to context.” He also identifies confusion over the mechanisms by which racial threat is manifest, identifying instrumental and psychological mechanisms as alternative explanations that may prove too much or too little. While this has long been a question political scientists have been interested in exploring, there are usually a number of obstacles to conducting a thorough investigation. 
+
+Enos seeks to address these concerns by an innovative exploration of racial threat in the context of voting turnout. In the early 2000s, public housing reconstruction in Chicago caused mass displacement — forcing approximately 25,000 African Americans to move to new homes and new neighborhoods. Enos takes advantage of this unique situation to study racial threat and context. By relying on the “exogenous” nature of these demolitions -- the deciding factors about which projects would be demolished were based on algorithms outside of individual residents’ control -- Enos explores the effect of removing African American neighbors on white voting turnout in Chicago. 
+
+Critically, Enos recognizes that the key assumption in this study is that the choice of units designated for demolition is uncorrelated with the difference in changes in turnout for white and African American voters. Enos describes how the demolitions can be thought of as a quasi -experiment, “The treatment is the demolition, and the outcome is the change in white political participation and support for conservative candidates.” 
+
+For his study, Enos utilized four different data sources: voting information (consisting of an augmented 2004 Illinois voter file updated with 2000 and 2010 census data); location data between voters and their distance from each demolished housing project; edge data covering the exact distance between each voter and the edge of a housing project; and, lastly, property records for all Chicago voters. 
+
+These data sources provide many advantages previously unavailable to studies of racial threat. In particular, the use of individual voter data avoids the ecological assumptions that usually plague aggregate/sampling data, and location data is helpful because it allows for testing of of a variety of definitions. The result is that any assessment of racial threat should be removed from the usual risks associated with data or causation that handicapped previous research. Similarly, because the change in the African American population is observable and triggered by exogenous activity -- the removal of the African American population as a result of the demolition of public housing -- the racial threat is more clearly identified by the changes in voter turnout and more clearly linked to the context in which it was observed.
+
+Enos examined three hypotheses:
+- H1 (Racial Threat and Turnout): After the demolition of the projects, turnout should decline for white voters close to the projects relative to the rest of the city.
+- H2 (Proximity and Size): The salience of a group is a strong predictor of intergroup attitudes [@Brewer84]. Psychologists have empirically demonstrated the intuitive finding that salience can be a function of the size and “immediacy” of an object [@Latane95]. This leads me to expect a “dose effect,” whereby the treatment should vary with the size and proximity of the treatment. Operationally, the treatment effect should decline as the white voters are farther away from a project and as the population of a project represents a smaller portion of the local outgroup population.
+- H3 (Racial Threat and Vote Choice): After the demolition of the projects, white voters close to the former projects should experience a decline in racially conservative voting relative to the rest of the city.
+
+Enos tested these hypotheses using the difference-in-differences approach to examine changes in voter turnout between sets of voters (before and after the demolition) by race and proximity to the demolished projects.
+
+The effect of the treatment (the demolition) is seen in difference in average voter turnout at times t-1 (pre demolition turnout) and t (post demolition turnout) for white voters in close proximity to the demolished projects compared to the average voter turnout over the same period for white voters living farther away. 
+
+The equation that Enos uses:  
+
+$ATE = [P(Vote2004|d∗ ≤ d) − P (Vote2000|d∗ ≤ d)] −[P(Vote2004|d∗ > d) − P(Vote2000|d∗ > d)]$
+
+$d*$ is how Enos defines the treatment and control groups (who lives close v. far). He starts this value at 100 meters away and creates 10 different groups (so all the way up to 1000 meters or 1 kilometer which in his mind is sufficient for potential interactions.) For this study, the analysis suggests the following calculation: voting turnout among white treatment voters (those who live within a specified distance) in 2004 - 2000 minus the voting turnout of white control (those who live further than the specified distance) in the same years. 
+
+Figure 1 displays this result for all four groups (African American Treatment, African American Control, White Treatment, White Control). 
+
+In order to feel confident in the results found through the difference-in-differences test, Enos conducted a series of robustness checks. He identified that none were more important than the parallel trends test. By incorporating data from previous elections, Enos was able to illustrate that the previous trends in voting behavior between treatment and control groups were largely parallel -- meaning that the difference between the ‘treatment’ and ‘control’ groups stayed consistent over time [@Columbia], meaning that change observed is attributable to the treatment. 
+
+The results suggest that racial threat is highly context specific and that the strength of the effect is inversely correlated with distance from the project and directly correlated with the size of the outgroup. These findings strongly suggest that racial threat occurs because of attitude change rather than selection.
 
 # Replication 
 
