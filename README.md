@@ -19,8 +19,6 @@ Enos (2016) measures the shift in voter turnout for white voters living in Chica
   * data_clean
      * untouched dataverse files
      * copy of enos (2016)
-  * data_commented
-    * commented dataverse files
   * images
     * image of fig one
     * image of fig a.two
