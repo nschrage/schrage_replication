@@ -8,6 +8,8 @@ This repository contains my attempt at replicating a published paper by a respec
 
 **A note on reproducibility:** The data set involved with this paper/replication is quite large. If you are going to try to reproduce my results, you will have to set up [Github Large File Sharing](https://git-lfs.github.com/). 
 
+**Update:** Featured in [this tweet](https://twitter.com/RyanDEnos/status/1259894862297563136).
+
 ## Abstract
 
 Enos (2016) measures the shift in voter turnout for white voters living in Chicago near demolished public housing, occupied predominantly by African Americans, as compared to white voters living farther away; observing that white voters living in close proximity to demolished public housing had a 10 percentage point drop in voter turnout between 2000 and 2004, Enos concludes that this change in behavior was the result of the decline in race threat from the change in size and proximity of the outgroup population. The results of my replication effort were largely successful, although there were some challenges. For my extension, I expanded the parallel trends robustness check that Enos presents in his appendix; my results were consistent with his findings. These results are significant in two important ways: first, they illustrate the strength of the robustness checks that Enos conducted and, second, they suggest that his conclusions about the effect of racial threat on voting are even more robust than his paper suggests.
